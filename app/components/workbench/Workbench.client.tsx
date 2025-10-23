@@ -10,6 +10,7 @@ import {
 import { IconButton } from '~/components/ui/IconButton';
 import { PanelHeaderButton } from '~/components/ui/PanelHeaderButton';
 import { Slider, type SliderOptions } from '~/components/ui/Slider';
+import { ReservoirMetrics } from '~/components/reservoir/ReservoirMetrics';
 import { workbenchStore, type WorkbenchViewType } from '~/lib/stores/workbench';
 import { classNames } from '~/utils/classNames';
 import { cubicEasingFn } from '~/utils/easings';
@@ -120,26 +121,33 @@ export const Workbench = memo(({ chatStarted, isStreaming }: WorkspaceProps) => 
             <div className="h-full flex flex-col bg-bolt-elements-background-depth-2 border border-bolt-elements-borderColor shadow-sm rounded-lg overflow-hidden">
               <div className="flex items-center px-3 py-2 border-b border-bolt-elements-borderColor">
                 <Slider selected={selectedView} options={sliderOptions} setSelected={setSelectedView} />
-                <div className="ml-auto" />
-                {selectedView === 'code' && (
-                  <PanelHeaderButton
-                    className="mr-1 text-sm"
+                
+                {/* Reservoir Metrics - Compact Mode */}
+                <div className="flex-1 flex justify-center">
+                  <ReservoirMetrics compact />
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  {selectedView === 'code' && (
+                    <PanelHeaderButton
+                      className="mr-1 text-sm"
+                      onClick={() => {
+                        workbenchStore.toggleTerminal(!workbenchStore.showTerminal.get());
+                      }}
+                    >
+                      <div className="i-ph:terminal" />
+                      Toggle Terminal
+                    </PanelHeaderButton>
+                  )}
+                  <IconButton
+                    icon="i-ph:x-circle"
+                    className="-mr-1"
+                    size="xl"
                     onClick={() => {
-                      workbenchStore.toggleTerminal(!workbenchStore.showTerminal.get());
+                      workbenchStore.showWorkbench.set(false);
                     }}
-                  >
-                    <div className="i-ph:terminal" />
-                    Toggle Terminal
-                  </PanelHeaderButton>
-                )}
-                <IconButton
-                  icon="i-ph:x-circle"
-                  className="-mr-1"
-                  size="xl"
-                  onClick={() => {
-                    workbenchStore.showWorkbench.set(false);
-                  }}
-                />
+                  />
+                </div>
               </div>
               <div className="relative flex-1 overflow-hidden">
                 <View
