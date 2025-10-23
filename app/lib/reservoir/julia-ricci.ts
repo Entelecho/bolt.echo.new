@@ -562,11 +562,25 @@ println(JSON.json(result))
    * Import state
    */
   public importState(state: any): void {
-    this.currentMetric = state.metric;
-    this.flowParams = state.flowParams;
-    this.operators = state.operators;
-    this.dimension = state.dimension;
-    this.config = { ...this.config, ...state.config };
+    if (!state || typeof state !== 'object') {
+      throw new Error('Invalid state: state must be an object');
+    }
+    
+    if (state.metric && typeof state.metric === 'object') {
+      this.currentMetric = state.metric;
+    }
+    if (state.flowParams && typeof state.flowParams === 'object') {
+      this.flowParams = { ...this.flowParams, ...state.flowParams };
+    }
+    if (Array.isArray(state.operators)) {
+      this.operators = state.operators;
+    }
+    if (typeof state.dimension === 'number' && state.dimension > 0) {
+      this.dimension = state.dimension;
+    }
+    if (state.config && typeof state.config === 'object') {
+      this.config = { ...this.config, ...state.config };
+    }
   }
 
   /**

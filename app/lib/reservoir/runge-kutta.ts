@@ -529,17 +529,23 @@ export class ButcherBSeriesRKRegression {
     // Update weights
     for (let i = 0; i < this.weights.length; i++) {
       for (let j = 0; j < this.weights[i].length; j++) {
-        this.weights[i][j] -= this.rkParams.learningRate * this.optimizationState.gradient[paramIndex++];
+        if (paramIndex < this.optimizationState.gradient.length) {
+          this.weights[i][j] -= this.rkParams.learningRate * this.optimizationState.gradient[paramIndex];
+        }
+        paramIndex++;
       }
     }
 
     // Update bias
     for (let i = 0; i < this.bias.length; i++) {
-      this.bias[i] -= this.rkParams.learningRate * this.optimizationState.gradient[paramIndex++];
+      if (paramIndex < this.optimizationState.gradient.length) {
+        this.bias[i] -= this.rkParams.learningRate * this.optimizationState.gradient[paramIndex];
+      }
+      paramIndex++;
     }
 
     // Update RK parameters
-    for (let i = paramIndex; i < this.optimizationState.parameters.length; i++) {
+    for (let i = paramIndex; i < this.optimizationState.parameters.length && i < this.optimizationState.gradient.length; i++) {
       this.optimizationState.parameters[i] -= this.rkParams.learningRate * this.optimizationState.gradient[i];
     }
   }

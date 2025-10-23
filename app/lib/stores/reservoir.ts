@@ -113,7 +113,7 @@ export class ReservoirStore {
     confidence: number;
     reservoirState: any;
   }> {
-    if (!this.#isInitialized || !this.config.get().enabled) {
+    if (!this.#isInitialized || !this.config.get().enabled || !this.#echoSelf) {
       return {
         enhancedMessage: userMessage,
         emotionalContext: {},
@@ -124,7 +124,7 @@ export class ReservoirStore {
     }
 
     try {
-      const result = await this.#echoSelf!.processInput(userMessage, context, detectedEmotions);
+      const result = await this.#echoSelf.processInput(userMessage, context, detectedEmotions);
       
       this.lastInteraction.set(Date.now());
       this.updateStateAndMetrics();

@@ -81,7 +81,9 @@ export const ReservoirMetrics = memo(({ compact = false }: ReservoirMetricsProps
         />
         <MetricBar 
           label="Resonance"
-          value={Object.values(metrics.resonancePatterns).reduce((a, b) => a + b, 0) / Object.keys(metrics.resonancePatterns).length || 0}
+          value={Object.keys(metrics.resonancePatterns).length > 0 ? 
+            Object.values(metrics.resonancePatterns).reduce((a, b) => a + b, 0) / Object.keys(metrics.resonancePatterns).length : 
+            0}
           color="#06b6d4"
         />
       </div>

@@ -44,12 +44,20 @@ export interface EvolutionParameters {
   fitnessThreshold: number;
 }
 
+interface MutationConfig {
+  mutationStrength: number;
+  permeabilityRange: number;
+  chargeRange: number;
+  objectChangeRange: number;
+}
+
 export class PSystemMembraneEvolution {
   private pSystem: PSystemState;
   private evolutionParams: EvolutionParameters;
   private population: PSystemState[];
   private fitnessScores: number[];
   private generation: number;
+  private mutationConfig: MutationConfig;
 
   constructor(
     initialMembranes: number = 5,
@@ -63,6 +71,13 @@ export class PSystemMembraneEvolution {
       maxGenerations: 100,
       fitnessThreshold: 0.95,
       ...evolutionParams
+    };
+
+    this.mutationConfig = {
+      mutationStrength: 0.2,
+      permeabilityRange: 0.2,
+      chargeRange: 0.5,
+      objectChangeRange: 6
     };
 
     this.pSystem = {
@@ -343,20 +358,20 @@ export class PSystemMembraneEvolution {
 
     // Mutate permeability
     if (Math.random() < this.evolutionParams.mutationRate) {
-      mutated.permeability += (Math.random() - 0.5) * 0.2;
+      mutated.permeability += (Math.random() - 0.5) * this.mutationConfig.permeabilityRange;
       mutated.permeability = Math.max(0.1, Math.min(0.9, mutated.permeability));
     }
 
     // Mutate charge
     if (Math.random() < this.evolutionParams.mutationRate) {
-      mutated.charge += (Math.random() - 0.5) * 0.5;
+      mutated.charge += (Math.random() - 0.5) * this.mutationConfig.chargeRange;
       mutated.charge = Math.max(-2, Math.min(2, mutated.charge));
     }
 
     // Mutate object quantities
     mutated.objects.forEach((count, objType) => {
       if (Math.random() < this.evolutionParams.mutationRate) {
-        const change = Math.floor((Math.random() - 0.5) * 6); // -3 to +3
+        const change = Math.floor((Math.random() - 0.5) * this.mutationConfig.objectChangeRange);
         mutated.objects.set(objType, Math.max(0, count + change));
       }
     });
